@@ -38,7 +38,7 @@ jobs:
           Write-Host "No leaked files; the bug is not reproduced with this toolchain."
 
   native-windows:
-    name: control - native build system (should pass)
+    name: same check with --build-system native
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -48,8 +48,9 @@ jobs:
           swift-build: DEVELOPMENT-SNAPSHOT-2026-05-20-a
       - run: swift --version
       - run: swift build --build-system native -v
+      - run: Get-ChildItem
       - shell: pwsh
         run: |
           $leaked = @('hello.txt', 'Info.plist') | Where-Object { Test-Path $_ }
           if ($leaked) { Write-Host "::error::Leaked: $($leaked -join ', ')"; exit 1 }
-          Write-Host "OK: nothing leaked with the native build system."
+          Write-Host "Nothing leaked with the native build system."
