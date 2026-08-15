@@ -16,7 +16,7 @@ jobs:
         uses: compnerd/gha-setup-swift@main
         with:
           swift-version: development
-          swift-build: DEVELOPMENT-SNAPSHOT-2026-08-11-a
+          swift-build: DEVELOPMENT-SNAPSHOT-2026-05-20-a
 
       - name: Swift version
         run: swift --version
@@ -45,7 +45,7 @@ jobs:
       - uses: compnerd/gha-setup-swift@main
         with:
           swift-version: development
-          swift-build: DEVELOPMENT-SNAPSHOT-2026-08-11-a
+          swift-build: DEVELOPMENT-SNAPSHOT-2026-05-20-a
       - run: swift --version
       - run: swift build --build-system native -v
       - shell: pwsh
