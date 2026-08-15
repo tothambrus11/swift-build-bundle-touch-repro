@@ -15,7 +15,7 @@ jobs:
       - name: Install Swift (main development snapshot)
         uses: compnerd/gha-setup-swift@main
         with:
-          swift-version: swift-development
+          swift-version: development
           swift-build: DEVELOPMENT-SNAPSHOT-2026-08-11-a
 
       - name: Swift version
@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: compnerd/gha-setup-swift@main
         with:
-          swift-version: swift-development
+          swift-version: development
           swift-build: DEVELOPMENT-SNAPSHOT-2026-08-11-a
       - run: swift --version
       - run: swift build --build-system native -v
