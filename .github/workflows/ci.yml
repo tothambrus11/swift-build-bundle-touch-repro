@@ -1,0 +1,55 @@
+name: Reproduce
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  swiftbuild-windows:
+    name: swiftbuild leaks bundle contents into CWD (Windows, main snapshot)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Swift (main development snapshot)
+        uses: compnerd/gha-setup-swift@main
+        with:
+          swift-version: swift-development
+          swift-build: DEVELOPMENT-SNAPSHOT-2026-08-11-a
+
+      - name: Swift version
+        run: swift --version
+
+      - name: Build with the SwiftBuild build system
+        run: swift build --build-system swiftbuild -v
+
+      - name: List package root
+        run: Get-ChildItem
+
+      - name: Check whether bundle contents leaked into the package root
+        shell: pwsh
+        run: |
+          $leaked = @('hello.txt', 'Info.plist') | Where-Object { Test-Path $_ }
+          if ($leaked) {
+            Write-Host "::error::Bug reproduced: resource bundle contents were copied into the package root: $($leaked -join ', ')"
+            exit 1
+          }
+          Write-Host "No leaked files; the bug is not reproduced with this toolchain."
+
+  native-windows:
+    name: control - native build system (should pass)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: compnerd/gha-setup-swift@main
+        with:
+          swift-version: swift-development
+          swift-build: DEVELOPMENT-SNAPSHOT-2026-08-11-a
+      - run: swift --version
+      - run: swift build --build-system native -v
+      - shell: pwsh
+        run: |
+          $leaked = @('hello.txt', 'Info.plist') | Where-Object { Test-Path $_ }
+          if ($leaked) { Write-Host "::error::Leaked: $($leaked -join ', ')"; exit 1 }
+          Write-Host "OK: nothing leaked with the native build system."

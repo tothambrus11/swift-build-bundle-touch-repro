@@ -28,5 +28,10 @@ argument is a *directory*, `copy` instead copies every file inside it into the c
 directory. Since the command runs with the package root as CWD, the bundle contents
 leak into the package.
 
-Observed with Swift 6.4-dev (x86_64-unknown-windows-msvc). Does not happen with
-`--build-system native`.
+Observed locally with Swift 6.4-dev (x86_64-unknown-windows-msvc), and in CI (see the
+`Reproduce` workflow) with the latest `main` development snapshot on `windows-latest`. Does
+not happen with `--build-system native`.
+
+The CI job `swiftbuild-windows` **fails while the bug is present** (it checks that
+`hello.txt` and `Info.plist` are absent from the package root after the build); the
+`native-windows` job is a passing control.
